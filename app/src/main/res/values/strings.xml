@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PostRequestApp</string>
+    <string name="pick_image">Pick image</string>
 </resources>
