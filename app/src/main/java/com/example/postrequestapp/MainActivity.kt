@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.esafirm.imagepicker.features.ImagePickerConfig
+import com.esafirm.imagepicker.features.ImagePickerMode
+import com.esafirm.imagepicker.features.registerImagePicker
 import com.example.postrequestapp.databinding.ActivityMainBinding
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -22,7 +25,7 @@ import java.io.File
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var uri: Uri
+    private lateinit var path: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,17 +34,21 @@ class MainActivity : AppCompatActivity() {
 
         val api = initApi()
 
-        val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) {
-            uri = it
-            binding.pathField.text = uri.toString()
+        val config = ImagePickerConfig {
+            mode = ImagePickerMode.SINGLE
+        }
+
+        val launcher = registerImagePicker {
+            path = it.first().path
         }
 
         binding.pickImageButton.setOnClickListener {
-            getContent.launch("image/*")
+
+            launcher.launch(config)
         }
 
         binding.requestButton.setOnClickListener {
-            val file = File(uri.path!!)
+            val file = File(path)
             val formData = MultipartBody.Part.createFormData(
                 "file",
                 file.absolutePath,
