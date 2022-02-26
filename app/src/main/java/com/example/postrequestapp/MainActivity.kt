@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.alpha
 import com.esafirm.imagepicker.features.ImagePickerConfig
 import com.esafirm.imagepicker.features.ImagePickerMode
 import com.esafirm.imagepicker.features.registerImagePicker
 import com.example.postrequestapp.databinding.ActivityMainBinding
 import com.google.gson.Gson
+import dev.sasikanth.colorsheet.ColorSheet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,6 +23,7 @@ import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.internal.toHexString
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -59,6 +63,20 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        val colors = resources.getIntArray(R.array.colors)
+
+        binding.pickColorButton.setOnClickListener {
+            ColorSheet().colorPicker(
+                colors = colors,
+                listener = { color ->
+                    binding.colorTextView.text = color.toHexString()
+                    binding.qrCodeImageView.setColorFilter(color)
+                })
+                .show(supportFragmentManager)
+        }
+
+
+
 
     }
 
@@ -69,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
         val formData = MultipartBody.Part.createFormData(
             "file",
-            file.absolutePath,
+            file.path,
             file.asRequestBody("multipart/form-data".toMediaType())
         )
 
