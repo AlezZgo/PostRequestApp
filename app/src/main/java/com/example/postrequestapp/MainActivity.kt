@@ -1,6 +1,7 @@
 package com.example.postrequestapp
 
 import android.graphics.BitmapFactory
+import android.graphics.ColorFilter
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
@@ -69,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             ColorSheet().colorPicker(
                 colors = colors,
                 listener = { color ->
-                    binding.colorTextView.text = color.toHexString()
+                    binding.colorTextView.setBackgroundColor(color)
                     binding.qrCodeImageView.setColorFilter(color)
                 })
                 .show(supportFragmentManager)
